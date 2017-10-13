@@ -24,7 +24,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: flask-app-ingress-civis-master
-  namespace: civis-demo
+  namespace: civis-master
 spec:
   # tls:
   # - secretName: tls
