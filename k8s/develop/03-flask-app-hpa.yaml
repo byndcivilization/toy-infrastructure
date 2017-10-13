@@ -2,13 +2,13 @@
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: flask-app-civis-demo
-  namespace: civis-demo
+  name: flask-app-civis-develop
+  namespace: civis-develop
 spec:
   scaleTargetRef:
     kind: Deployment
-    name: flask-app-civis-demo
-    namespace: civis-demo
+    name: flask-app-civis-develop
+    namespace: civis-develop
   minReplicas: 1
-  maxReplicas: 50
+  maxReplicas: 5
   targetCPUUtilizationPercentage: 50

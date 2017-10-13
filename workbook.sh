@@ -21,7 +21,7 @@ gcloud compute disks create civis-postgres-cluster-data-3 --size=20GB --type=pd-
 
 #K8S SETUP
 kubectl create namespace ${PROKECT_NS}
-kubectl create namespace ${APP_ENV}
+kubectl create namespace civis-${APP_ENV}
 kubectl create -f ./k8s/00-persistant-volumes.yaml
 kubectl create -f ./k8s/01-persistant-volume-claim.yaml
 kubectl create -f ./k8s/02-services.yaml
@@ -40,9 +40,10 @@ cd flask-app && python manage.py db migrate && cd ../
 cd flask-app && python manage.py db upgrade && cd ../
 
 #CREATE APP
-kubectl create -f ./k8s/${APP_ENV}/00-flask-app-service.yaml
-kubectl create -f ./k8s/${APP_ENV}/01-flask-app-deployment.yaml
-kubectl create -f ./k8s/${APP_ENV}/02-flask-app-hpa.yaml
+kubectl create -f ./k8s/${APP_ENV}/00-flask-app-secrets.yaml
+kubectl create -f ./k8s/${APP_ENV}/01-flask-app-service.yaml
+kubectl create -f ./k8s/${APP_ENV}/02-flask-app-deployment.yaml
+kubectl create -f ./k8s/${APP_ENV}/03-flask-app-hpa.yaml
 
 
 

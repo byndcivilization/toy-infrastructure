@@ -1,0 +1,25 @@
+- name: BUILD UNIT TESTS
+  service: deploy_build
+  tag: "^(develop|master)$"
+  dockercfg_service: gcr_dockercfg
+  command: pytest --ignore=flask-app/venv/
+- name: PUSH DEVELOP OR STAGING IMAGE
+  tag: "^(develop|master)$"
+  service: deploy_build
+  type: push
+  image_name: us.gcr.io/civis-demo-181920/flask-app
+  image_tag: "{{.Branch}}"
+  registry: https://us.gcr.io
+  dockercfg_service: gcr_dockercfg
+- name: PUSH DEVELOP OR STAGING VERSIONED IMAGE
+  tag: "^(develop|master)$"
+  service: deploy_build
+  type: push
+  image_name: us.gcr.io/civis-demo-181920/flask-app
+  image_tag: "{{.Branch}}-{{.Timestamp}}-{{.CommitID}}-{{.CommitterUsername}}"
+  registry: https://us.gcr.io
+  dockercfg_service: gcr_dockercfg
+- name: DEPLOY DEVELOP OR STAGING
+  tag: "^(develop|master)$"
+  service: google_cloud_deployment
+  command: /deploy/scripts/deploy_to_k8s.sh

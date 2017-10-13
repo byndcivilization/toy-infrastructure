@@ -2,25 +2,25 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: flask-app-civis-demo
+  name: flask-app-civis-develop
   labels:
-    env: civis-demo
-    name: flask-app-civis-demo
+    env: civis-develop
+    name: flask-app-civis-develop
   annotations:
     contact: Chris Perry
-  namespace: civis-demo
+  namespace: civis-develop
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: flask-app-civis-demo
+      name: flask-app-civis-develop
   template:
     metadata:
       labels:
-        name: flask-app-civis-demo
+        name: flask-app-civis-develop
     spec:
       containers:
-      - name: flask-app-civis-demo
+      - name: flask-app-civis-develop
         image: us.gcr.io/civis-demo-181920/flask-app:develop
         imagePullPolicy: Always
         resources:
@@ -68,12 +68,12 @@ spec:
           - name: DB_ROLE
             valueFrom:
               secretKeyRef:
-                name: civis-demo-secrets
+                name: civis-develop-secrets
                 key: db-user
           - name: DB_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: civis-demo-secrets
+                name: civis-develop-secrets
                 key: db-pass
           - name: REDIS_HOST
             value: "civis-demo-redis.civis-demo"

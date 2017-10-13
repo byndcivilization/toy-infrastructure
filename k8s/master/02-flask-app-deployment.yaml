@@ -68,12 +68,12 @@ spec:
           - name: DB_ROLE
             valueFrom:
               secretKeyRef:
-                name: civis-demo-secrets
+                name: civis-master-secrets
                 key: db-user
           - name: DB_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: civis-demo-secrets
+                name: civis-master-secrets
                 key: db-pass
           - name: REDIS_HOST
             value: "civis-demo-redis.civis-demo"
