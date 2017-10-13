@@ -1,0 +1,51 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    contact: Chris Perry
+  labels:
+    volume: civis-postgres-cluster-data-1
+  name: civis-postgres-cluster-data-1-claim
+  namespace: civis-demo
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 15Gi
+  volumeName: civis-postgres-cluster-data-1
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    contact: Chris Perry
+  labels:
+    volume: civis-postgres-cluster-data-2
+  name: civis-postgres-cluster-data-2-claim
+  namespace: civis-demo
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 15Gi
+  volumeName: civis-postgres-cluster-data-2
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    contact: Chris Perry
+  labels:
+    volume: civis-postgres-cluster-data-3
+  name: civis-postgres-cluster-data-3-claim
+  namespace: civis-demo
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 15Gi
+  volumeName: civis-postgres-cluster-data-3

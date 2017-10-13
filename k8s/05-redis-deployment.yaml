@@ -1,0 +1,48 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    contact: Chris Perry
+    description: Civis Demo Redis Deployment
+  labels:
+    app: civis-demo-redis
+    role: master
+    tier: backend
+  name: civis-demo-redis-master
+  namespace: civis-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: civis-demo-redis
+      role: master
+      tier: backend
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: civis-demo-redis
+        role: master
+        tier: backend
+    spec:
+      containers:
+      - image: gcr.io/google_containers/redis:e2e
+        imagePullPolicy: IfNotPresent
+        name: master
+        ports:
+        - containerPort: 6379
+          protocol: TCP
+        resources:
+          requests:
+            cpu: "750m"
+            memory: 512Mi
+        terminationMessagePath: /dev/termination-log
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      securityContext: {}
+      terminationGracePeriodSeconds: 30

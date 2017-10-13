@@ -7,7 +7,15 @@ class Config(object):
     TESTING = False
     CSRF_ENABLED = True
     SECRET_KEY = os.getenv('APP_SECRET_KEY', '')
-    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URI']
+    # db config
+    DB_PORT = os.getenv('DB_PORT', '')
+    DB_HOST = os.getenv('DB_HOST', '')
+    DB_ROLE = os.getenv('DB_ROLE', '')
+    # TODO: abstract auth stuff to kubernetes manifests
+    DB_PASSWORD = os.getenv('DB_PASSWORD', '')
+    DB_NAME = os.getenv('DB_NAME', '')
+    SQLALCHEMY_DATABASE_URI = 'postgresql://{}:{}@{}:{}/{}'.format(
+        DB_ROLE, DB_PASSWORD, DB_HOST, str(DB_PORT), DB_NAME)
 
 
 class ProductionConfig(Config):

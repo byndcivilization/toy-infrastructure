@@ -1,0 +1,81 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    contact: Chris Perry
+    description: Civis Demo Postgres Environment
+  labels:
+    name: civis-demo-postgres
+  name: civis-demo-postgres
+  namespace: civis-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: civis-demo-postgres
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        description: Civis Demo Postgres Environment
+      labels:
+        name: civis-demo-postgres
+    spec:
+      containers:
+      - env:
+        - name: POSTGRES_USER
+          value: postgres
+        - name: PGDATA
+          value: /mnt/data/postgres
+        - name: POSTGRES_INITDB_ARGS
+          value: ' --data-checksums'
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: dev-postgres
+        image: postgres:9.5
+        imagePullPolicy: Always
+        name: civis-demo-postgres
+        ports:
+        - containerPort: 5432
+          protocol: TCP
+        resources:
+          limits:
+            cpu: "2"
+          requests:
+            cpu: "1"
+            memory: 2Gi
+        terminationMessagePath: /dev/termination-log
+        volumeMounts:
+        - mountPath: /mnt/data
+          name: data
+        - mountPath: /etc/secrets/postgres
+          name: dev-postgres
+          readOnly: true
+        - mountPath: /mnt/data2
+          name: data2
+        - mountPath: /mnt/data3
+          name: data3
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: civis-postgres-cluster-data-1-claim
+      - name: data2
+        persistentVolumeClaim:
+          claimName: civis-postgres-cluster-data-2-claim
+      - name: dev-postgres
+        secret:
+          defaultMode: 420
+          secretName: dev-postgres
+      - name: data3
+        persistentVolumeClaim:
+          claimName: civis-postgres-cluster-data-3-claim
