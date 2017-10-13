@@ -1,0 +1,14 @@
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: flask-app-civis-master
+  namespace: civis-master
+spec:
+  scaleTargetRef:
+    kind: Deployment
+    name: flask-app-civis-master
+    namespace: civis-master
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 50

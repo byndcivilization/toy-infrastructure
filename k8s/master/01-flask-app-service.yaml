@@ -3,13 +3,13 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    description: Flask App for Civis Demo
+    description: Flask App for Civis MASTER
     contact: Chris Perry
   labels:
-    env: civis-demo
-    name: flask-app-civis-demo
-  name: flask-app-civis-demo
-  namespace: civis-demo
+    env: civis-master
+    name: flask-app-civis-master
+  name: flask-app-civis-master
+  namespace: civis-master
 spec:
   ports:
   - name: http
@@ -17,17 +17,17 @@ spec:
     port: 80
     protocol: TCP
   selector:
-    name: flask-app-civis-demo
+    name: flask-app-civis-master
   type: NodePort
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: flask-app-ingress-civis-demo
+  name: flask-app-ingress-civis-master
   namespace: civis-demo
 spec:
   # tls:
   # - secretName: tls
   backend:
-    serviceName: flask-app-civis-demo
+    serviceName: flask-app-civis-master
     servicePort: 80

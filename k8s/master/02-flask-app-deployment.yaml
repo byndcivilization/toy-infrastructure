@@ -1,0 +1,105 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: flask-app-civis-master
+  labels:
+    env: civis-master
+    name: flask-app-civis-master
+  annotations:
+    contact: Chris Perry
+  namespace: civis-master
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: flask-app-civis-master
+  template:
+    metadata:
+      labels:
+        name: flask-app-civis-master
+    spec:
+      containers:
+      - name: flask-app-civis-master
+        image: us.gcr.io/civis-demo-181920/flask-app:develop
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "512Mi"
+          limits:
+            cpu: 1
+            memory: "1Gi"
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        livenessProbe:
+          exec:
+            command:
+            - python
+            - /usr/src/app/health_check.py
+            - liveness
+          periodSeconds: 30
+        readinessProbe:
+          exec:
+            command:
+            - python
+            - /usr/src/app/health_check.py
+            - readiness
+          periodSeconds: 30
+        env:
+          - name: FLASK_DEBUG
+            value: "true"
+          - name: LC_ALL
+            value: "C.UTF-8"
+          - name: LANG
+            value: "C.UTF-8"
+          - name: APP_SETTINGS
+            value: "config.DevelopmentConfig"
+          - name: APP_SECRET_KEY
+            value: "lungsmen unearth the creed of hasheeshian"
+          - name: DB_HOST
+            value: "civis-demo-postgres.civis-demo"
+          - name: DB_PORT
+            value: "5432"
+          - name: DB_NAME
+            value: "wordcount_dev"
+          - name: DB_ROLE
+            valueFrom:
+              secretKeyRef:
+                name: civis-demo-secrets
+                key: db-user
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: civis-demo-secrets
+                key: db-pass
+          - name: REDIS_HOST
+            value: "civis-demo-redis.civis-demo"
+          - name: REDIS_PORT
+            value: "6379"
+          - name: RUN_HOST
+            value: "0.0.0.0"
+          - name: RUN_PORT
+            value: "80"
+          - name: GUNICORN_WORKERS
+            value: "4"
+          - name: GUNICORN_BACKLOG
+            value: "4096"
+          - name: GUNICORN_BIND
+            value: "0.0.0.0:80"
+          - name: GUNICORN_WORKER_CONNECTIONS
+            value: "1000"
+          - name: GUNICORN_MAX_REQUESTS
+            value: "500"
+          - name: GUNICORN_MAX_REQUESTS_JITTER
+            value: "50"
+          - name: GUNICORN_WORKER_CLASS
+            value: sync
+          - name: GUNICORN_THREADS
+            value: "4"
+          - name: GUNICORN_TIMEOUT
+            value: "90"
+          - name: GUNICORN_GRACEFUL_TIMEOUT
+            value: "30"

@@ -1,6 +1,7 @@
 #!/bin/bash
 export GCLOUD_ZONE=us-east1-b
 export PROKECT_NS=civis-demo
+export APP_ENV=master
 
 # CREATE CLUSTER AND ADD TO KC
 gcloud auth login
@@ -20,6 +21,7 @@ gcloud compute disks create civis-postgres-cluster-data-3 --size=20GB --type=pd-
 
 #K8S SETUP
 kubectl create namespace ${PROKECT_NS}
+kubectl create namespace ${APP_ENV}
 kubectl create -f ./k8s/00-persistant-volumes.yaml
 kubectl create -f ./k8s/01-persistant-volume-claim.yaml
 kubectl create -f ./k8s/02-services.yaml
@@ -38,9 +40,9 @@ cd flask-app && python manage.py db migrate && cd ../
 cd flask-app && python manage.py db upgrade && cd ../
 
 #CREATE APP
-kubectl create -f ./k8s/06-flask-app-service.yaml
-kubectl create -f ./k8s/07-flask-app-deployment.yaml
-kubectl create -f ./k8s/08-flask-app-hpa.yaml
+kubectl create -f ./k8s/${APP_ENV}/00-flask-app-service.yaml
+kubectl create -f ./k8s/${APP_ENV}/01-flask-app-deployment.yaml
+kubectl create -f ./k8s/${APP_ENV}/02-flask-app-hpa.yaml
 
 
 
@@ -52,8 +54,8 @@ kubectl create -f ./k8s/08-flask-app-hpa.yaml
 #CLEANUP
 # gcloud auth login
 # gcloud config set project civis-demo-181920
-kubectl config unset users.$(kubectl config view -o json | jq .users |  grep gke_civis-demo | tr -d '"' | tr -d ',' | sed -e 's/.*://')
-kubectl config unset contexts.$(kubectl config view -o json | jq .contexts |  grep name | grep gke_civis-demo | tr -d '"' | tr -d ',' | sed -e 's/.*://')
-kubectl config unset clusters.$(kubectl config view -o json | jq .clusters  |  grep gke_civis-demo | tr -d '"' | tr -d ',' | sed -e 's/.*://')
+kubectl config unset users.$(kubectl config view -o json | jq .users |  grep gke_civis-demo | tr -d '"' | tr -d ',' | sed -e 's/.*://' | tr -d '[:space:]')
+kubectl config unset contexts.$(kubectl config view -o json | jq .contexts |  grep name | grep gke_civis-demo | tr -d '"' | tr -d ',' | sed -e 's/.*://' | tr -d '[:space:]')
+kubectl config unset clusters.$(kubectl config view -o json | jq .clusters  |  grep gke_civis-demo | tr -d '"' | tr -d ',' | sed -e 's/.*://' | tr -d '[:space:]')
 gcloud container clusters delete toy-cluster
 
